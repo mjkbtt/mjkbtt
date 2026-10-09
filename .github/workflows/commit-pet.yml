@@ -1,0 +1,25 @@
+name: Commit Pet
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 21 * * *"
+
+permissions:
+  contents: write
+  pull-requests: write
+  models: read
+
+jobs:
+  commit-pet:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Generate Commit Pet
+        uses: yukurash/commit-pet@v1
+        with:
+          species: cat
+          name: Mjuki
+          output: commit-pet.svg
+          theme: en
