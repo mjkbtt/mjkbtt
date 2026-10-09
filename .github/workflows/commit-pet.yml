@@ -7,8 +7,6 @@ on:
 
 permissions:
   contents: write
-  pull-requests: write
-  models: read
 
 jobs:
   commit-pet:
@@ -16,13 +14,26 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Generate Commit Pet
-        uses: yukurash/commit-pet@v1
+      - name: Checkout Commit Pet generator
+        uses: actions/checkout@v4
         with:
-          species: cat
-          name: Mjuki
-          output: commit-pet.svg
-          theme: en
+          repository: yukurash/commit-pet
+          ref: v1
+          path: .commit-pet
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Generate Commit Pet
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          node .commit-pet/src/generate.js \
+            --user "${{ github.repository_owner }}" \
+            --species cat \
+            --name Mjuki \
+            --theme en \
+            --out commit-pet.svg
       - name: Commit and push updated pet
         run: |
           if git diff --quiet commit-pet.svg; then
