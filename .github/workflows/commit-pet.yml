@@ -23,3 +23,14 @@ jobs:
           name: Mjuki
           output: commit-pet.svg
           theme: en
+      - name: Commit and push updated pet
+        run: |
+          if git diff --quiet commit-pet.svg; then
+            echo "No pet changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add commit-pet.svg
+          git commit -m "chore: update commit pet"
+          git push
